@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # set the project name and version
-project(AdventOfCode2023 VERSION 1.0)
+project(AdventOfCode2023 VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 
