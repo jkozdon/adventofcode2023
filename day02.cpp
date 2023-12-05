@@ -15,61 +15,62 @@ void day02(const char *base) {
       exit(1);
     }
 
+    std::regex regex("([0-9]*) (red|green|blue)");
+    auto max_red = 12;
+    auto max_green = 13;
+    auto max_blue = 14;
     std::string line;
+    auto game = 0;
     while (std::getline(input, line)) {
-      std::size_t first = line.find_first_of("1234567890");
-      std::size_t last = line.find_last_of("1234567890");
-      part1 += (line[first] - '0') * 10 + (line[last] - '0');
+      ++game;
+      part1 += game;
+      auto color_begin = std::sregex_iterator(line.begin(), line.end(), regex);
+      auto color_end = std::sregex_iterator();
+      for (std::sregex_iterator i = color_begin; i != color_end; ++i) {
+        std::smatch match = *i;
+        auto num = stoi(match[1]);
+        if ((match[2] == "red" && max_red < num) ||
+            (match[2] == "green" && max_green < num) ||
+            (match[2] == "blue" && max_blue < num)) {
+          part1 -= game;
+          break;
+        }
+      }
     }
   }
 
-  /*
-   */
   auto part2 = 0;
   {
     std::filesystem::path path = base;
-    path /= "day02_2.txt";
+    path /= "day02.txt";
     std::ifstream input(path);
     if (!input.is_open()) {
-      path = base;
-      path /= "day02.txt";
-      input.open(path);
+      fmt::print(stderr, "Cannot open input: {}\n", path.string());
+      exit(1);
     }
 
-    auto convert = [&](std::string digit) {
-      if (digit == "1" || digit == "one") {
-        return 1;
-      } else if (digit == "2" || digit == "two") {
-        return 2;
-      } else if (digit == "3" || digit == "three") {
-        return 3;
-      } else if (digit == "4" || digit == "four") {
-        return 4;
-      } else if (digit == "5" || digit == "five") {
-        return 5;
-      } else if (digit == "6" || digit == "six") {
-        return 6;
-      } else if (digit == "7" || digit == "seven") {
-        return 7;
-      } else if (digit == "8" || digit == "eight") {
-        return 8;
-      } else if (digit == "9" || digit == "nine") {
-        return 9;
-      }
-      return 0;
-    };
-
+    std::regex regex("([0-9]*) (red|green|blue)");
     std::string line;
-    std::regex start_regex(
-        "([1-9]|one|two|three|four|five|six|seven|eight|nine)");
-    std::regex end_regex(
-        "^(.*)([1-9]|one|two|three|four|five|six|seven|eight|nine)");
+    auto game = 0;
     while (std::getline(input, line)) {
-      std::smatch match;
-      std::regex_search(line, match, start_regex);
-      part2 += 10 * convert(match[1]);
-      std::regex_search(line, match, end_regex);
-      part2 += convert(match[2]);
+      ++game;
+      auto red = 0;
+      auto green = 0;
+      auto blue = 0;
+      auto color_begin = std::sregex_iterator(line.begin(), line.end(), regex);
+      auto color_end = std::sregex_iterator();
+      for (std::sregex_iterator i = color_begin; i != color_end; ++i) {
+        std::smatch match = *i;
+        auto num = stoi(match[1]);
+        if (match[2] == "red") {
+          red = std::max(red, num);
+        } else if (match[2] == "blue") {
+          blue = std::max(blue, num);
+        } else if (match[2] == "green") {
+          green = std::max(green, num);
+        }
+      }
+      part2 += red * blue * green;
     }
   }
 
