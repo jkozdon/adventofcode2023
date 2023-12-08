@@ -4,6 +4,7 @@
 #include "day02.cpp"
 #include "day03.cpp"
 #include "day04.cpp"
+#include "day05.cpp"
 
 int main(int argc, char *argv[]) {
   if (argc < 2 || argc > 3) {
@@ -16,4 +17,5 @@ int main(int argc, char *argv[]) {
   day02(base_path);
   day03(base_path);
   day04(base_path);
+  day05(base_path);
 }
